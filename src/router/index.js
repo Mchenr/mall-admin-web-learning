@@ -46,115 +46,174 @@ export const constantRoutes = [
   {
     path: '/',
     component: Layout,
-    redirect: '/dashboard',
+    redirect: '/home',
     children: [{
-      path: 'dashboard',
-      name: 'Dashboard',
+      path: 'home',
+      name: 'Home',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: 'Dashboard', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'dashboard' }
     }]
   },
 
   {
-    path: '/example',
+    path: '/pms',
     component: Layout,
-    redirect: '/example/table',
+    redirect: '/pms/table',
     name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    meta: { title: '商品', icon: 'example' },
     children: [
       {
-        path: 'table',
+        path: 'product',
         name: 'Table',
         component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        meta: { title: '商品列表', icon: 'table' }
       },
       {
-        path: 'tree',
+        path: 'addProduct',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: '添加商品', icon: 'table' }
+      },
+      {
+        path: 'productCate',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: '商品分类', icon: 'table' }
+      },
+      {
+        path: 'productAttr',
+        name: 'Table',
+        component: () => import('@/views/table/index'),
+        meta: { title: '商品类型', icon: 'table' }
+      },
+      {
+        path: 'brand',
         name: 'Tree',
         component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        meta: { title: '品牌管理', icon: 'tree' }
       }
     ]
   },
 
   {
-    path: '/form',
+    path: '/oms',
     component: Layout,
+    redirect: '/oms/order',
+    name: 'Example',
+    meta: { title: '订单', icon: 'example' },
     children: [
       {
-        path: 'index',
+        path: 'order',
         name: 'Form',
         component: () => import('@/views/form/index'),
-        meta: { title: 'Form', icon: 'form' }
+        meta: { title: '订单列表', icon: 'form' }
+      },
+      {
+        path: 'orderSetting',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '订单设置', icon: 'form' }
+      },
+      {
+        path: 'returnApply',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '退货申请处理', icon: 'form' }
+      },
+      {
+        path: 'returnReason',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '退货原因设置', icon: 'form' }
       }
     ]
   },
 
   {
-    path: '/nested',
+    path: '/sms',
     component: Layout,
-    redirect: '/nested/menu1',
+    redirect: '/sms/flash',
     name: 'Nested',
     meta: {
-      title: 'Nested',
+      title: '营销',
       icon: 'nested'
     },
     children: [
       {
-        path: 'menu1',
+        path: 'flash',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
         name: 'Menu1',
-        meta: { title: 'Menu1' },
-        children: [
-          {
-            path: 'menu1-1',
-            component: () => import('@/views/nested/menu1/menu1-1'),
-            name: 'Menu1-1',
-            meta: { title: 'Menu1-1' }
-          },
-          {
-            path: 'menu1-2',
-            component: () => import('@/views/nested/menu1/menu1-2'),
-            name: 'Menu1-2',
-            meta: { title: 'Menu1-2' },
-            children: [
-              {
-                path: 'menu1-2-1',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-1'),
-                name: 'Menu1-2-1',
-                meta: { title: 'Menu1-2-1' }
-              },
-              {
-                path: 'menu1-2-2',
-                component: () => import('@/views/nested/menu1/menu1-2/menu1-2-2'),
-                name: 'Menu1-2-2',
-                meta: { title: 'Menu1-2-2' }
-              }
-            ]
-          },
-          {
-            path: 'menu1-3',
-            component: () => import('@/views/nested/menu1/menu1-3'),
-            name: 'Menu1-3',
-            meta: { title: 'Menu1-3' }
-          }
-        ]
+        meta: { title: '秒杀活动列表', icon: 'form' }
       },
       {
-        path: 'menu2',
+        path: 'coupon',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: '优惠券列表', icon: 'form' }
+      },
+      {
+        path: 'brand',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: '品牌推荐', icon: 'form' }
+      },
+      {
+        path: 'new',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: '新品推荐', icon: 'form' }
+      },
+      {
+        path: 'hot',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: '人气推荐', icon: 'form' }
+      },
+      {
+        path: 'subject',
+        component: () => import('@/views/nested/menu1/index'), // Parent router-view
+        name: 'Menu1',
+        meta: { title: '专题推荐', icon: 'form' }
+      },
+      {
+        path: 'advertise',
         component: () => import('@/views/nested/menu2/index'),
-        meta: { title: 'menu2' }
+        name: 'Menu2',
+        meta: { title: '广告列表', icon: 'form' }
       }
     ]
   },
 
   {
-    path: 'external-link',
+    path: '/ums',
     component: Layout,
+    redirect: '/ums/admin',
+    name: 'Example',
+    meta: { title: '权限', icon: 'example' },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'admin',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '用户列表', icon: 'form' }
+      },
+      {
+        path: 'role',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '角色列表', icon: 'form' }
+      },
+      {
+        path: 'menu',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '菜单列表', icon: 'form' }
+      },
+      {
+        path: 'resource',
+        name: 'Form',
+        component: () => import('@/views/form/index'),
+        meta: { title: '资源列表', icon: 'form' }
       }
     ]
   },

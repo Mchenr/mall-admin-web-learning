@@ -27,7 +27,7 @@ const mutations = {
     state.device = device
   }
 }
-
+// toggleSideBar ({ commit })的写法是es2015中的参数解构
 const actions = {
   toggleSideBar({ commit }) {
     commit('TOGGLE_SIDEBAR')
