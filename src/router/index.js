@@ -89,7 +89,7 @@ export const constantRoutes = [
       {
         path: 'brand',
         name: 'Tree',
-        component: () => import('@/views/tree/index'),
+        component: () => import('@/views/pms/brand/index'),
         meta: { title: '品牌管理', icon: 'tree' }
       }
     ]
