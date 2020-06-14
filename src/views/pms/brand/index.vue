@@ -4,7 +4,7 @@
       <div>
         <i class="el-icon-search"></i>
         <span>筛选搜索</span>
-        <el-button style="float: right" type="primary" size="small">查询结果</el-button>
+        <el-button style="float: right" type="primary" size="small" @click="handleQuerySubmit">查询结果</el-button>
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" label-width="140px" size="small">
@@ -24,13 +24,14 @@
     <el-table
       class="table-container"
       v-loading="listLoading"
+      ref="brandTable"
       :data="list"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
       style="width: 100%"
-    >
+      @selection-change="handleSelectionChange">
       <el-table-column
         type="selection"
         width="55">
@@ -61,7 +62,7 @@
             v-model="scope.row.factoryStatus"
             :active-value="1"
             :inactive-value="0"
-            @change="changeFactoryStatus($event, scope.row.id)">
+            @change="handleFactoryStatusChange($event, scope.row.id)">
           </el-switch>
         </template>
       </el-table-column>
@@ -71,7 +72,7 @@
             v-model="scope.row.showStatus"
             :active-value="1"
             :inactive-value="0"
-            @change="changeShowStatus($event, scope.row.id)">
+            @change="handleShowStatusChange($event, scope.row.id)">
           </el-switch>
         </template>
       </el-table-column>
@@ -96,7 +97,7 @@
       </el-table-column>
     </el-table>
     <div class="batch-operate-container">
-      <el-select v-model="value" clearable placeholder="批量操作" size="small" style="width: 190px">
+      <el-select v-model="operateType" clearable placeholder="批量操作" size="small" style="width: 190px">
         <el-option
           v-for="item in options"
           :key="item.value"
@@ -104,17 +105,17 @@
           :value="item.value">
         </el-option>
       </el-select>
-      <el-button style="margin-left: 15px" size="small" type="primary">确定</el-button>
+      <el-button style="margin-left: 15px" size="small" type="primary" @click="handleBatchOperate">确定</el-button>
       <div class="pagination-container">
         <el-pagination
           background
           @size-change="handleSizeChange"
           @current-change="handleCurrentChange"
           layout="total, sizes, prev, pager, next, jumper"
-          :current-page="currentPage4"
+          :current-page="listQuery.pageNum"
           :page-sizes="[5, 10, 15]"
           :page-size="listQuery.pageSize"
-          :total="11">
+          :total="total">
         </el-pagination>
       </div>
     </div>
@@ -137,22 +138,23 @@ export default {
   },
   data() {
     return {
-      list: null,
-      listLoading: true,
       listQuery: {
         keywords: '',
         pageNum: 1,
         pageSize: 10
       },
-      total: null,
       options: [{
-        value: '1',
+        value: 'showBrand',
         label: '显示品牌'
       }, {
-        value: '0',
+        value: 'hideBrand',
         label: '隐藏品牌'
       }],
-      value: ''
+      total: null,
+      list: null,
+      listLoading: true,
+      operateType: null,
+      multipleSelection: []
     }
   },
   created() {
@@ -161,40 +163,82 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      getList().then(response => {
-        this.list = response.data
+      getList(this.listQuery).then(response => {
+        this.list = response.data.list
+        this.total = response.data.total
+        this.pageSize = response.data.pageSize
+        this.pageNum = response.data.pageNum
         console.log(this.list)
         this.listLoading = false
       })
     },
-    changeFactoryStatus(val, id) {
+    handleFactoryStatusChange(val, id) {
       console.log(val)
       console.log(id)
       changeFactoryStatus({ ids: id, factoryStatus: val }).then(response => {
         console.log(response.data)
       })
     },
-    changeShowStatus(val, id) {
+    handleShowStatusChange(val, id) {
       console.log(val)
       console.log(id)
       changeShowStatus({ ids: id, showStatus: val }).then(response => {
         console.log(response.data)
       })
     },
-    onSubmit() {
-      console.log('submit!');
+    handleQuerySubmit() {
+      console.log('submit!')
+      this.fetchData()
     },
     handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+      console.log(`每页 ${val} 条`)
+      this.listQuery.pageSize = val
+      this.fetchData()
     },
     handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+      console.log(`当前页: ${val}`)
+      this.listQuery.pageNum = val
+      this.fetchData()
+    },
+    handleBatchOperate() {
+      let showStatus = 0
+      if (this.operateType === 'showBrand') {
+        showStatus = 1
+      } else if (this.operateType === 'hideBrand') {
+        showStatus = 0
+      } else {
+        this.$message({
+          message: '请输入批量操作类型',
+          type: 'warning',
+          duration: 1000
+        })
+        return
+      }
+      const ids = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        ids.push(this.multipleSelection[i].id)
+      }
+      const param = new URLSearchParams()
+      param.append('ids', ids)
+      param.append('showStatus', showStatus)
+      console.log(param)
+      changeShowStatus(param).then(reponse => {
+        this.clearTableSelection()
+        this.fetchData()
+        console.log(reponse.data)
+      })
     },
     handleEdit(index, row) {
-      console.log(index, row);
+      console.log(index, row)
     },
     handleDelete(index, row) {
-      console.log(index, row);
+      console.log(index, row)
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    clearTableSelection() {
+      this.$refs.brandTable.clearSelection()
     }
   }
 }

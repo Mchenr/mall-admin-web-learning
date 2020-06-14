@@ -1,10 +1,13 @@
 import request from '@/utils/request'
 
-export function getList(params) {
+export function getList(listQuery) {
   return request({
-    url: '/brand/listAll',
+    url: '/brand/list',
     method: 'get',
-    params
+    params: {
+      keyword: listQuery.keywords,
+      pageNum: listQuery.pageNum,
+      pageSize: listQuery.pageSize }
   })
 }
 
