@@ -18,7 +18,7 @@
       <div>
         <i class="el-icon-tickets"></i>
         <span>数据列表</span>
-        <el-button style="float: right" size="small">添加</el-button>
+        <el-button style="float: right" size="small" @click="handleAddBrand">添加</el-button>
       </div>
     </el-card>
     <el-table
@@ -123,7 +123,7 @@
 </template>
 
 <script>
-import { getList, changeFactoryStatus, changeShowStatus } from '@/api/table'
+import { getList, changeFactoryStatus, changeShowStatus } from '@/api/brand'
 
 export default {
   filters: {
@@ -239,6 +239,9 @@ export default {
     },
     clearTableSelection() {
       this.$refs.brandTable.clearSelection()
+    },
+    handleAddBrand() {
+      this.$router.push({ path: '/pms/addBrand' })
     }
   }
 }
