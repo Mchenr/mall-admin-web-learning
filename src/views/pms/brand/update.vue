@@ -1,12 +1,14 @@
 <template>
-  <BrandDetails />
+  <div class="app-container">
+    <BrandDetails :is-edit="true"/>
+  </div>
 </template>
 
 <script>
 import BrandDetails from './components/BrandDetails'
 
 export default {
-  name: 'Update',
+  name: 'UpdateBrand',
   components: { BrandDetails }
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <BrandDetails />
+    <BrandDetails :is-edit="false"/>
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import BrandDetails from './components/BrandDetails'
 
 export default {
-  name: 'Add',
+  name: 'AddBrand',
   components: { BrandDetails }
 }
 </script>

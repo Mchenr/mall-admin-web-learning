@@ -2,40 +2,41 @@
   <div class="app-container">
     <el-card class="filter-container" shadow="never">
       <div>
-        <i class="el-icon-search"></i>
+        <i class="el-icon-search" />
         <span>筛选搜索</span>
         <el-button style="float: right" type="primary" size="small" @click="handleQuerySubmit">查询结果</el-button>
       </div>
       <div style="margin-top: 15px">
         <el-form :inline="true" :model="listQuery" label-width="140px" size="small">
           <el-form-item label="输入搜索：">
-            <el-input style="width: 200px" placeholder="品牌名称/关键字" v-model="listQuery.keywords"></el-input>
+            <el-input v-model="listQuery.keyword" style="width: 200px" placeholder="品牌名称/关键字" />
           </el-form-item>
         </el-form>
       </div>
     </el-card>
     <el-card shadow="never" class="operator-container">
       <div>
-        <i class="el-icon-tickets"></i>
+        <i class="el-icon-tickets" />
         <span>数据列表</span>
         <el-button style="float: right" size="small" @click="handleAddBrand">添加</el-button>
       </div>
     </el-card>
     <el-table
-      class="table-container"
-      v-loading="listLoading"
       ref="brandTable"
+      v-loading="listLoading"
+      class="table-container"
       :data="list"
       element-loading-text="Loading"
       border
       fit
       highlight-current-row
       style="width: 100%"
-      @selection-change="handleSelectionChange">
+      @selection-change="handleSelectionChange"
+    >
       <el-table-column
         type="selection"
-        width="55">
-      </el-table-column>
+        width="55"
+      />
       <el-table-column align="center" label="编号" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
@@ -62,8 +63,8 @@
             v-model="scope.row.factoryStatus"
             :active-value="1"
             :inactive-value="0"
-            @change="handleFactoryStatusChange($event, scope.row.id)">
-          </el-switch>
+            @change="handleFactoryStatusChange($event, scope.row.id)"
+          />
         </template>
       </el-table-column>
       <el-table-column label="是否显示" width="110" align="center">
@@ -72,8 +73,8 @@
             v-model="scope.row.showStatus"
             :active-value="1"
             :inactive-value="0"
-            @change="handleShowStatusChange($event, scope.row.id)">
-          </el-switch>
+            @change="handleShowStatusChange($event, scope.row.id)"
+          />
         </template>
       </el-table-column>
       <el-table-column class-name="status-col" label="相关" width="180" align="center">
@@ -88,11 +89,13 @@
         <template slot-scope="scope">
           <el-button
             size="mini"
-            @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+            @click="handleEdit(scope.$index, scope.row)"
+          >编辑</el-button>
           <el-button
             size="mini"
             type="danger"
-            @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            @click="handleDelete(scope.$index, scope.row)"
+          >删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -102,28 +105,28 @@
           v-for="item in options"
           :key="item.value"
           :label="item.label"
-          :value="item.value">
-        </el-option>
+          :value="item.value"
+        />
       </el-select>
       <el-button style="margin-left: 15px" size="small" type="primary" @click="handleBatchOperate">确定</el-button>
       <div class="pagination-container">
         <el-pagination
           background
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
           layout="total, sizes, prev, pager, next, jumper"
           :current-page="listQuery.pageNum"
           :page-sizes="[5, 10, 15]"
           :page-size="listQuery.pageSize"
-          :total="total">
-        </el-pagination>
+          :total="total"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import { getList, changeFactoryStatus, changeShowStatus } from '@/api/brand'
+import { getList, changeFactoryStatus, changeShowStatus, deleteBrand } from '@/api/brand'
 
 export default {
   filters: {
@@ -139,7 +142,7 @@ export default {
   data() {
     return {
       listQuery: {
-        keywords: '',
+        keyword: '',
         pageNum: 1,
         pageSize: 10
       },
@@ -222,17 +225,41 @@ export default {
       param.append('ids', ids)
       param.append('showStatus', showStatus)
       console.log(param)
-      changeShowStatus(param).then(reponse => {
+      changeShowStatus(param).then(response => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
         this.clearTableSelection()
         this.fetchData()
-        console.log(reponse.data)
+        console.log(response.data)
       })
     },
     handleEdit(index, row) {
-      console.log(index, row)
+      this.$router.push({ path: '/pms/updateBrand', query: { id: row.id }})
+      console.log(index, row.id)
     },
     handleDelete(index, row) {
-      console.log(index, row)
+      this.$confirm('此操作将永久删除该条数据, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        deleteBrand(row.id).then(response => {
+          console.log(response.data)
+          this.fetchData()
+        })
+        console.log(index, row)
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
     },
     handleSelectionChange(val) {
       this.multipleSelection = val

@@ -4,7 +4,8 @@
       ref="brand"
       :model="brand"
       label-width="120px"
-      :rules="rules">
+      :rules="rules"
+    >
       <el-form-item label="品牌名称：" prop="name">
         <el-input v-model="brand.name" />
       </el-form-item>
@@ -12,36 +13,10 @@
         <el-input v-model="brand.firstLetter" />
       </el-form-item>
       <el-form-item label="品牌LOGO：" prop="logo">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
-          multiple
-          :limit="3"
-          :on-exceed="handleExceed"
-          :file-list="fileList"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
-        </el-upload>
+        <el-input v-model="brand.logo" />
       </el-form-item>
       <el-form-item label="品牌专区大图：">
-        <el-upload
-          class="upload-demo"
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :on-preview="handlePreview"
-          :on-remove="handleRemove"
-          :before-remove="beforeRemove"
-          multiple
-          :limit="3"
-          :on-exceed="handleExceed"
-          :file-list="fileList"
-        >
-          <el-button size="small" type="primary">点击上传</el-button>
-          <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过10MB</div>
-        </el-upload>
+        <el-input v-model="brand.bigPic" />
       </el-form-item>
       <el-form-item label="品牌故事：">
         <el-input
@@ -75,27 +50,28 @@
 </template>
 
 <script>
+import { getBrand, createBrand, updateBrand } from '@/api/brand'
+const defaultBrand = {
+  name: '',
+  firstLetter: '',
+  logo: '',
+  bigPic: '',
+  brandStory: '',
+  sort: 0,
+  showStatus: 0,
+  factoryStatus: 0
+}
 export default {
   name: 'BrandDetails',
+  props: {
+    isEdit: {
+      type: Boolean,
+      default: false
+    }
+  },
   data() {
     return {
-      brand: {
-        name: '',
-        firstLetter: '',
-        logo: '',
-        bigPic: '',
-        brandStory: '',
-        sort: 0,
-        showStatus: 0,
-        factoryStatus: 0
-      },
-      fileList: [{
-        name: 'food.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }, {
-        name: 'food2.jpeg',
-        url: 'https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100'
-      }],
+      brand: Object.assign({}, defaultBrand),
       rules: {
         name: [
           { required: true, message: '请输入品牌名称', trigger: 'blur' },
@@ -110,11 +86,50 @@ export default {
       }
     }
   },
+  created() {
+    if (this.isEdit) {
+      getBrand(this.$route.query.id).then(response => {
+        console.log(response.data)
+        this.brand = response.data
+      })
+    } else {
+      this.brand = Object.assign({}, defaultBrand)
+    }
+  },
   methods: {
     onSubmit(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
-          alert('submit!')
+          this.$confirm('确认是否提交?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            if (this.isEdit) {
+              updateBrand(this.$route.query.id, this.brand).then(response => {
+                this.$message({
+                  type: 'success',
+                  message: '修改成功!'
+                })
+                console.log(response.data)
+              })
+            } else {
+              createBrand(this.brand).then(response => {
+                console.log(response.data)
+                this.$message({
+                  type: 'success',
+                  message: '添加成功!'
+                })
+                this.$refs[formName].resetFields()
+                this.brand = Object.assign({}, defaultBrand)
+              })
+            }
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消提交'
+            })
+          })
         } else {
           console.log('error submit!!')
           return false
@@ -122,19 +137,30 @@ export default {
       })
     },
     resetForm(formName) {
-      this.$refs[formName].resetFields()
-    },
-    handleRemove(file, fileList) {
-      console.log(file, fileList)
-    },
-    handlePreview(file) {
-      console.log(file)
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(`当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${files.length + fileList.length} 个文件`)
-    },
-    beforeRemove(file, fileList) {
-      return this.$confirm(`确定移除 ${file.name}？`)
+      this.$confirm('是否重置输入?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        if (this.isEdit) {
+          getBrand(this.$route.query.id).then(response => {
+            console.log(response.data)
+            this.brand = response.data
+          })
+        } else {
+          this.$refs[formName].resetFields()
+          this.brand = Object.assign({}, defaultBrand)
+        }
+        this.$message({
+          type: 'success',
+          message: '重置成功!'
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消重置'
+        })
+      })
     }
   }
 }

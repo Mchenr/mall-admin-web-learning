@@ -58,7 +58,7 @@ export const constantRoutes = [
   {
     path: '/pms',
     component: Layout,
-    redirect: '/pms/table',
+    redirect: '/pms/product',
     name: 'Example',
     meta: { title: '商品', icon: 'example' },
     children: [
@@ -97,6 +97,13 @@ export const constantRoutes = [
         name: 'addBrand',
         component: () => import('@/views/pms/brand/add'),
         meta: { title: '添加品牌' },
+        hidden: true
+      },
+      {
+        path: 'updateBrand',
+        name: 'updateBrand',
+        component: () => import('@/views/pms/brand/update'),
+        meta: { title: '编辑品牌' },
         hidden: true
       }
     ]
