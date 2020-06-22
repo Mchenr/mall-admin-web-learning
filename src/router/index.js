@@ -51,7 +51,7 @@ export const constantRoutes = [
       path: 'home',
       name: 'Home',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '首页', icon: 'dashboard' }
+      meta: { title: '首页', icon: 'home' }
     }]
   },
 
@@ -59,38 +59,38 @@ export const constantRoutes = [
     path: '/pms',
     component: Layout,
     redirect: '/pms/product',
-    name: 'Example',
-    meta: { title: '商品', icon: 'example' },
+    name: 'pms',
+    meta: { title: '商品', icon: 'product' },
     children: [
       {
         path: 'product',
         name: 'product',
         component: () => import('@/views/table/index'),
-        meta: { title: '商品列表', icon: 'table' }
+        meta: { title: '商品列表', icon: 'product-list' }
       },
       {
         path: 'addProduct',
         name: 'addProduct',
         component: () => import('@/views/table/index'),
-        meta: { title: '添加商品', icon: 'table' }
+        meta: { title: '添加商品', icon: 'product-add' }
       },
       {
         path: 'productCate',
         name: 'productCate',
         component: () => import('@/views/table/index'),
-        meta: { title: '商品分类', icon: 'table' }
+        meta: { title: '商品分类', icon: 'product-cate' }
       },
       {
         path: 'productAttr',
         name: 'productAttr',
         component: () => import('@/views/table/index'),
-        meta: { title: '商品类型', icon: 'table' }
+        meta: { title: '商品类型', icon: 'product-attr' }
       },
       {
         path: 'brand',
         name: 'brand',
         component: () => import('@/views/pms/brand/index'),
-        meta: { title: '品牌管理', icon: 'tree' }
+        meta: { title: '品牌管理', icon: 'product-brand' }
       },
       {
         path: 'addBrand',
@@ -113,32 +113,32 @@ export const constantRoutes = [
     path: '/oms',
     component: Layout,
     redirect: '/oms/order',
-    name: 'Example',
-    meta: { title: '订单', icon: 'example' },
+    name: 'oms',
+    meta: { title: '订单', icon: 'order' },
     children: [
       {
         path: 'order',
-        name: 'Form',
+        name: 'order',
         component: () => import('@/views/form/index'),
-        meta: { title: '订单列表', icon: 'form' }
+        meta: { title: '订单列表', icon: 'product-list' }
       },
       {
         path: 'orderSetting',
-        name: 'Form',
+        name: 'orderSetting',
         component: () => import('@/views/form/index'),
-        meta: { title: '订单设置', icon: 'form' }
+        meta: { title: '订单设置', icon: 'order-setting' }
       },
       {
         path: 'returnApply',
-        name: 'Form',
+        name: 'returnApply',
         component: () => import('@/views/form/index'),
-        meta: { title: '退货申请处理', icon: 'form' }
+        meta: { title: '退货申请处理', icon: 'order-return' }
       },
       {
         path: 'returnReason',
-        name: 'Form',
+        name: 'returnReason',
         component: () => import('@/views/form/index'),
-        meta: { title: '退货原因设置', icon: 'form' }
+        meta: { title: '退货原因设置', icon: 'order-return-reason' }
       }
     ]
   },
@@ -147,53 +147,53 @@ export const constantRoutes = [
     path: '/sms',
     component: Layout,
     redirect: '/sms/flash',
-    name: 'Nested',
+    name: 'sms',
     meta: {
       title: '营销',
-      icon: 'nested'
+      icon: 'sms'
     },
     children: [
       {
         path: 'flash',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '秒杀活动列表', icon: 'form' }
+        name: 'flash',
+        meta: { title: '秒杀活动列表', icon: 'sms-flash' }
       },
       {
         path: 'coupon',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '优惠券列表', icon: 'form' }
+        name: 'coupon',
+        meta: { title: '优惠券列表', icon: 'sms-coupon' }
       },
       {
         path: 'brand',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '品牌推荐', icon: 'form' }
+        name: 'brand',
+        meta: { title: '品牌推荐', icon: 'product-brand' }
       },
       {
         path: 'new',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '新品推荐', icon: 'form' }
+        name: 'new',
+        meta: { title: '新品推荐', icon: 'sms-new' }
       },
       {
         path: 'hot',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '人气推荐', icon: 'form' }
+        name: 'hot',
+        meta: { title: '人气推荐', icon: 'sms-hot' }
       },
       {
         path: 'subject',
         component: () => import('@/views/nested/menu1/index'), // Parent router-view
-        name: 'Menu1',
-        meta: { title: '专题推荐', icon: 'form' }
+        name: 'subject',
+        meta: { title: '专题推荐', icon: 'sms-subject' }
       },
       {
         path: 'advertise',
         component: () => import('@/views/nested/menu2/index'),
-        name: 'Menu2',
-        meta: { title: '广告列表', icon: 'form' }
+        name: 'advertise',
+        meta: { title: '广告列表', icon: 'sms-ad' }
       }
     ]
   },
@@ -202,32 +202,32 @@ export const constantRoutes = [
     path: '/ums',
     component: Layout,
     redirect: '/ums/admin',
-    name: 'Example',
-    meta: { title: '权限', icon: 'example' },
+    name: 'ums',
+    meta: { title: '权限', icon: 'ums' },
     children: [
       {
         path: 'admin',
-        name: 'Form',
+        name: 'admin',
         component: () => import('@/views/form/index'),
-        meta: { title: '用户列表', icon: 'form' }
+        meta: { title: '用户列表', icon: 'ums-admin' }
       },
       {
         path: 'role',
-        name: 'Form',
+        name: 'role',
         component: () => import('@/views/form/index'),
-        meta: { title: '角色列表', icon: 'form' }
+        meta: { title: '角色列表', icon: 'ums-role' }
       },
       {
         path: 'menu',
-        name: 'Form',
+        name: 'menu',
         component: () => import('@/views/form/index'),
-        meta: { title: '菜单列表', icon: 'form' }
+        meta: { title: '菜单列表', icon: 'ums-menu' }
       },
       {
         path: 'resource',
-        name: 'Form',
+        name: 'resource',
         component: () => import('@/views/form/index'),
-        meta: { title: '资源列表', icon: 'form' }
+        meta: { title: '资源列表', icon: 'ums-resource' }
       }
     ]
   },
