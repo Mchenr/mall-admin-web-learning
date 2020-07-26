@@ -83,7 +83,7 @@ export const constantRoutes = [
       {
         path: 'productAttr',
         name: 'productAttr',
-        component: () => import('@/views/table/index'),
+        component: () => import('@/views/pms/productAttr/index'),
         meta: { title: '商品类型', icon: 'product-attr' }
       },
       {
