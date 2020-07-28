@@ -8,19 +8,19 @@ export function listAttrCate(params) {
   })
 }
 
-export function createAttrCate(data) {
+export function createAttrCate(attrCateName) {
   return request({
     url: '/productAttrCategory/createAttrCate',
     method: 'post',
-    data: data
+    params: { attrCateName }
   })
 }
 
-export function updateAttrCate(id, data) {
+export function updateAttrCate(id, attrCateName) {
   return request({
     url: '/productAttrCategory/updateAttrCate/' + id,
     method: 'post',
-    data: data
+    params: { attrCateName }
   })
 }
 

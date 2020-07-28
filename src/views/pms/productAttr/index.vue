@@ -10,7 +10,8 @@
     <AttrNameOperateDialog
       ref="attrNameOperateDialog"
       :operate-type="operateType"
-    ></AttrNameOperateDialog>
+      @closeDialog="closeDialog"
+    />
     <el-table
       ref="attrCateTable"
       v-loading="listLoading"
@@ -86,7 +87,7 @@
 </template>
 
 <script>
-import { listAttrCate, createAttrCate, updateAttrCate, getItem, deleteAttrCate } from '@/api/productAttr'
+import { listAttrCate, deleteAttrCate } from '@/api/productAttr'
 import AttrNameOperateDialog from './components/AttrCateNameOperateDialog'
 
 export default {
@@ -153,7 +154,14 @@ export default {
       this.operateType = '编辑类型'
       this.$refs['attrNameOperateDialog'].dialogFormVisible = true
       this.$refs['attrNameOperateDialog'].productAttrCate.attrCateName = row.name
+      this.$refs['attrNameOperateDialog'].productAttrCate.id = row.id
       console.log(index, row.id)
+    },
+    closeDialog(flag) {
+      if (flag) {
+        this.fetchData()
+      }
+      this.dialogFormVisible = false
     },
     handleDelete(index, row) {
       this.$confirm('此操作将永久删除该类型以及此类型下的所有属性和参数,一旦删除无法恢复， 是否继续?', '提示', {
