@@ -7,11 +7,6 @@
         <el-button style="float: right" size="small" @click="addItem">添加</el-button>
       </div>
     </el-card>
-    <AttrNameOperateDialog
-      ref="attrNameOperateDialog"
-      :operate-type="operateType"
-      @closeDialog="closeDialog"
-    />
     <el-table
       ref="attrCateTable"
       v-loading="listLoading"
@@ -23,36 +18,43 @@
       highlight-current-row
       style="width: 100%"
     >
+      <el-table-column
+        type="selection"
+        width="55"
+      />
       <el-table-column align="center" label="编号" width="95">
         <template slot-scope="scope">
           {{ scope.$index }}
         </template>
       </el-table-column>
-      <el-table-column label="类型名称" align="center">
+      <el-table-column label="属性名称" align="center">
         <template slot-scope="scope">
           {{ scope.row.name }}
         </template>
       </el-table-column>
-      <el-table-column label="属性数量" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.attributeCount }}</span>
+      <el-table-column label="商品类型" width="110" align="center">
+        <template>
+          <span>{{ cname }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="参数数量" width="110" align="center">
+      <el-table-column label="属性是否可选" width="110" align="center">
         <template slot-scope="scope">
-          {{ scope.row.paramCount }}
+          {{scope.row.selectType|selectTypeFilter}}
         </template>
       </el-table-column>
-      <el-table-column align="center" prop="created_at" label="设置" width="200">
+      <el-table-column label="属性值的录入方式" width="200" align="center">
         <template slot-scope="scope">
-          <el-button
-            size="mini"
-            @click="handleAttrList(scope.$index, scope.row)"
-          >属性列表</el-button>
-          <el-button
-            size="mini"
-            @click="handleParamList(scope.$index, scope.row)"
-          >参数列表</el-button>
+          {{scope.row.inputType|inputTypeFilter}}
+        </template>
+      </el-table-column>
+      <el-table-column label="可选值列表" width="200" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.inputList }}
+        </template>
+      </el-table-column>
+      <el-table-column label="排序" width="110" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.sort }}
         </template>
       </el-table-column>
       <el-table-column align="center" prop="created_at" label="操作" width="200">
@@ -70,6 +72,15 @@
       </el-table-column>
     </el-table>
     <div class="batch-operate-container">
+      <el-select v-model="operateType" clearable placeholder="批量操作" size="small" style="width: 190px">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+      <el-button style="margin-left: 15px" size="small" type="primary" @click="handleBatchOperate">确定</el-button>
       <div class="pagination-container">
         <el-pagination
           background
@@ -87,11 +98,9 @@
 </template>
 
 <script>
-import { listAttrCate, deleteAttrCate } from '@/api/productAttr'
-import AttrNameOperateDialog from './components/AttrCateNameOperateDialog'
+import { deleteAttr, productAttrList } from '@/api/productAttr'
 
 export default {
-  components: { AttrNameOperateDialog },
   filters: {
     statusFilter(status) {
       const statusMap = {
@@ -100,19 +109,36 @@ export default {
         deleted: 'danger'
       }
       return statusMap[status]
+    },
+    inputTypeFilter(value) {
+      if (value === 1) {
+        return '从列表中选取';
+      } else {
+        return '手工录入'
+      }
+    },
+    selectTypeFilter(value) {
+      if (value === 1) {
+        return '单选';
+      } else if (value === 2) {
+        return '多选';
+      } else {
+        return '唯一'
+      }
     }
   },
   data() {
     return {
       listQuery: {
         pageNum: 1,
-        pageSize: 10
+        pageSize: 10,
+        cid: null,
+        type: 0
       },
       total: null,
       list: null,
       listLoading: true,
-      operateType: '添加类型',
-      dialogFormVisible: false
+      cname: null
     }
   },
   created() {
@@ -121,8 +147,11 @@ export default {
   methods: {
     fetchData() {
       this.listLoading = true
-      listAttrCate(this.listQuery).then(response => {
+      this.listQuery.cid = this.$route.query.cid
+      this.listQuery.type = this.$route.query.type
+      productAttrList(this.listQuery).then(response => {
         this.list = response.data.list
+        this.cname = this.$route.query.cname
         this.total = response.data.total
         this.pageSize = response.data.pageSize
         this.pageNum = response.data.pageNum
@@ -140,38 +169,21 @@ export default {
       this.listQuery.pageNum = val
       this.fetchData()
     },
-    handleAttrList(index, row) {
-      console.log(index, row.id)
-      this.$router.push({ path: '/pms/productAttrList', query: { cid: row.id, cname: row.name, type: 0 }})
-    },
-    handleParamList(index, row) {
-      console.log(index, row.id)
-      this.$router.push({ path: '/pms/productAttrList', query: { cid: row.id, cname: row.name, type: 1 }})
-    },
     addItem() {
-      this.operateType = '添加类型'
-      this.$refs['attrNameOperateDialog'].dialogFormVisible = true
+      console.log('添加操作')
     },
     handleEdit(index, row) {
-      this.operateType = '编辑类型'
-      this.$refs['attrNameOperateDialog'].dialogFormVisible = true
-      this.$refs['attrNameOperateDialog'].productAttrCate.attrCateName = row.name
-      this.$refs['attrNameOperateDialog'].productAttrCate.id = row.id
+      console.log('编辑操作')
       console.log(index, row.id)
     },
-    closeDialog(flag) {
-      if (flag) {
-        this.fetchData()
-      }
-      this.dialogFormVisible = false
-    },
     handleDelete(index, row) {
+      console.log('删除操作')
       this.$confirm('此操作将永久删除该类型以及此类型下的所有属性和参数,一旦删除无法恢复， 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteAttrCate(row.id).then(response => {
+        deleteAttr(row.id).then(response => {
           console.log(response.data)
           this.fetchData()
         })

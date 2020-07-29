@@ -38,3 +38,42 @@ export function deleteAttrCate(id) {
   })
 }
 
+export function productAttrList(params) {
+  return request({
+    url: '/productAttr/productAttrList',
+    method: 'get',
+    params: params
+  })
+}
+
+export function addProductAttr(data) {
+  return request({
+    url: '/productAttr/createAttrCate',
+    method: 'post',
+    data: data
+  })
+}
+
+export function updateProductAttr(id, data) {
+  return request({
+    url: '/productAttr/updateProductAttr/' + id,
+    method: 'post',
+    data: data
+  })
+}
+
+export function getAttrItem(id) {
+  return request({
+    url: '/productAttr/getItem/' + id,
+    method: 'get'
+  })
+}
+
+export function deleteAttr(ids) {
+  return request({
+    url: '/productAttr/deleteAttr/batch',
+    method: 'get',
+    params: { ids }
+  })
+}
+
