@@ -17,6 +17,7 @@
       fit
       highlight-current-row
       style="width: 100%"
+      @selection-change="handleSelectionChange"
     >
       <el-table-column
         type="selection"
@@ -39,12 +40,12 @@
       </el-table-column>
       <el-table-column label="属性是否可选" width="110" align="center">
         <template slot-scope="scope">
-          {{scope.row.selectType|selectTypeFilter}}
+          {{ scope.row.selectType|selectTypeFilter }}
         </template>
       </el-table-column>
       <el-table-column label="属性值的录入方式" width="200" align="center">
         <template slot-scope="scope">
-          {{scope.row.inputType|inputTypeFilter}}
+          {{ scope.row.inputType|inputTypeFilter }}
         </template>
       </el-table-column>
       <el-table-column label="可选值列表" width="200" align="center">
@@ -112,16 +113,16 @@ export default {
     },
     inputTypeFilter(value) {
       if (value === 1) {
-        return '从列表中选取';
+        return '从列表中选取'
       } else {
         return '手工录入'
       }
     },
     selectTypeFilter(value) {
       if (value === 1) {
-        return '单选';
+        return '单选'
       } else if (value === 2) {
-        return '多选';
+        return '多选'
       } else {
         return '唯一'
       }
@@ -138,7 +139,13 @@ export default {
       total: null,
       list: null,
       listLoading: true,
-      cname: null
+      cname: null,
+      options: [{
+        value: '1',
+        label: '删除'
+      }],
+      multipleSelection: [],
+      operateType: ''
     }
   },
   created() {
@@ -176,9 +183,31 @@ export default {
       console.log('编辑操作')
       console.log(index, row.id)
     },
+    handleBatchOperate() {
+      const ids = []
+      for (let i = 0; i < this.multipleSelection.length; i++) {
+        ids.push(this.multipleSelection[i].id)
+      }
+      console.log(ids)
+      deleteAttr(ids).then(response => {
+        this.$message({
+          type: 'success',
+          message: '操作成功!'
+        })
+        this.clearTableSelection()
+        this.fetchData()
+        console.log(response.data)
+      })
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
+    },
+    clearTableSelection() {
+      this.$refs.brandTable.clearSelection()
+    },
     handleDelete(index, row) {
       console.log('删除操作')
-      this.$confirm('此操作将永久删除该类型以及此类型下的所有属性和参数,一旦删除无法恢复， 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该数据,一旦删除无法恢复， 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
